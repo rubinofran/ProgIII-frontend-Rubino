@@ -1,0 +1,15 @@
+.menuContainer {
+    background-color:darkcyan;
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: center; */
+    text-align: center;
+}
+
+.operaciones {
+    margin: 20px 500px;
+    background-color:yellow;
+    padding: 20px;
+    border-radius: 20px;
+    /* text-align: start; */
+}
