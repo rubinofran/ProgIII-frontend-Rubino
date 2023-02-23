@@ -1,16 +1,27 @@
 import "../styles/App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-/* import AppStatus from "../components/AppStatus"; */
-import Login from "../components/Login";
-import Form from "../components/Form";
-import Menu from "../components/Menu";
+
+// Módulos
+import AppStatus from "../modules/AppStatus";
+import Login from "../modules/Login";
+import Form from "../modules/Form";
+import Menu from "../modules/Menu";
+import AdminMenu from "../modules/AdminMenu";
+
+/*  */
+import Pruebas from "../modules/Pruebas";
+/*  */
 
 function Router() {
 	const router = createBrowserRouter([
-		/* {path: "/", element: <AppStatus />,}, solo para test de conexión al back */
-		{path: "/", element: <Login />,},
-		{path: "/form", element: <Form />,},
-		{path: "/menu", element: <Menu />,}
+		{path: '/', element: <AppStatus />,}, /* No redirige si LS está vacío */
+		{path: '/login', element: <Login />,}, /* No redirige si LS está vacío */
+		{path: '/form', element: <Form />,}, /* No redirige si LS está vacío */
+		{path: '/menu', element: <Menu />,}, /* Redirige si LS está vacío, el destino es el login */
+		{path: '/admin-menu', element: <AdminMenu />,}, /* Redirige si LS está vacío, el destino es el login */
+		/*  */
+		{path: '/pruebas', element: <Pruebas />,}
+		/*  */
 	]);
 
 	return <RouterProvider router={router} />;
