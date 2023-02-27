@@ -1,10 +1,10 @@
-import { AuxContext } from "./context/AuxContext";
 import { useMemo, useState } from "react";
 import Router from "./routes/index";
+import { AuxContext } from "./context/AuxContext";
 
 function App() {
 
-  const [txt, setTxt] = useState("/// Contexto de pruebas ///");
+  const [txt, setTxt] = useState('/// Contexto de pruebas ///');
 	const txtProvider = useMemo(
 		() => ({ txt, setTxt }),
 		[txt, setTxt]

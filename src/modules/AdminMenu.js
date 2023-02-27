@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import '../styles/AdminMenu.css';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+// Ant desing 
+import { Divider, Row, Col, Button } from "antd";
 
 // Servicios
 import userService from "../services/users";
@@ -16,15 +18,10 @@ function AdminMenu() {
 
     const navigate = useNavigate()
 
-	const handleDeslog = async (e) => {
-        e.preventDefault()
-        try {
-            await localStorageService.deleteLS()
-            navigate("/login")
-        } catch (err) {
-            console.log('... . Error: ', err);
-        }
-    }
+	const handleDeslog = () => {
+		localStorageService.deleteLS()
+		navigate("/login")
+	}
 
 	useEffect(() => {
 		async function adminMenu() {
@@ -32,41 +29,52 @@ function AdminMenu() {
 				const userLogged = await localStorageService.getLS();
 				if (!userLogged) {
                     console.log('Local storage vacío');
-                    navigate("/login")
+                    navigate("/login");
 				} else {
 					console.log('Usuario logueado: ', userLogged.user);
-                    setUserLoggedName('PONER NAME AL ADMIN') // userLogged.user.name
+                    setUserLoggedName(userLogged.user.name);
 					const response = await userService.getUsers();
-					setUsers(response.data);
+					/* console.log(response) */
+					setUsers(response.data.filter((x) => x.role.name !== 'admin'));
 				}
 			} catch (err) {
 				console.log('Error al intentar obtener el token de usuario. Error: ', err);
-				navigate("/login")
+				navigate("/login");
 			}
 		}
 		adminMenu();
 	}, []);
 
     return (
-        <div className='adminMenuContainer'>
-			<h1>Entidad Bancaria - Administrador - {userLoggedName}</h1>
-            {users.map(x => (
-				/* MEJORAR */
-				x.userName.includes('admin')
-					? 'nombre o razón social - email/nombre de usuario - Detalles - Dar de baja - Eliminar' 
-					: 
+        <div className='indexCssContainers'>
+			<Divider style={styles.divider}/>
+            <Divider style={styles.divider}>ENTIDAD BANCARIA - ADMINISTRADOR - {userLoggedName}</Divider>
+			<div className='adminMenuCssScrollableArea'>
+				{users.map(x => (
 					<User
 						key={x._id}
 						data={x}
 						userList={users}
 						setUserList={setUsers}
 					></User>
-			))}
-			<form onSubmit={handleDeslog}>
-                <p><button className='btn-salida'>CERRAR SESIÓN</button></p>
-            </form>
+				))}
+			</div>
+			<Divider style={styles.divider}/>
+			<Button onClick={handleDeslog}>CERRAR SESIÓN</Button>
+			<Divider style={styles.divider}/>
         </div>
     )
+}
+
+const styles = {
+	divider: {
+		borderWidth: 2, 
+		borderColor: 'aquamarine',
+	},
+	row: {
+        padding: '15px 0',
+		backgroundColor: 'lightgrey'
+    }
 }
 
 export default AdminMenu;

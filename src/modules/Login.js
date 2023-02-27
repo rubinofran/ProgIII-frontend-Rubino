@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
-import '../styles/Login.css';
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+// Ant desing 
+import { Divider, Row, Col, Form, Input, Button, message, Card } from "antd"; 
+// message.error('error message') message.warning('warning message') message.open('success message')
 
 // Servicios
 import localStorageService from "../services/localStorage";
@@ -8,47 +10,48 @@ import userService from "../services/users";
 
 function Login() {
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     
 	const error = (errorMessage) => {
-		window.alert("Error: " + errorMessage);
+		message.error(errorMessage);
 	};
 
-    const handleLogin = async (e) => {
-        e.preventDefault()
+    const handleLogin = async (values) => {
         try {
+            /* console.log('Success:', values); */
             const response = await userService.validateUserAndCreateToken({
-                userName: username,
-                password: password
-            })
+                userName: values.username,
+                password: values.password
+            });
             if (response.data.token) {
                 const payload = { user: response.data.user, token: response.data.token };
                 localStorageService.setLS(payload);
             }
-            setUsername('')
-            setPassword('')
-            /* MEJORAR */
-            username.includes('admin') 
-                ? navigate("/admin-menu")            
-                : navigate("/menu")
+            response.data.user.role === 'admin'
+                ? navigate('/admin-menu')            
+                : navigate('/menu')
         } catch (err) {
             console.log('Password o usuario inválidos. Error: ', err);
             error('Password o usuario inválidos')
         }
-
-    }
+    };
+      
+    const handleLoginFailed = (errorInfo) => {
+        // eslint-disable-next-line
+        errorInfo.errorFields.map(err => {
+            error(err.errors);
+            console.log('Error: ' + err.errors[0]);
+        });
+    };
 
     useEffect(() => {
 		async function login() {
 			try {
-				const userLogged = await localStorageService.getLS();
-				if (!userLogged) {
+				const response = await localStorageService.getLS();
+				if (!response) {
                     console.log('Local storage vacío');
 				} else {
-					console.log('Usuario logueado: ', userLogged.user);
+					console.log('Usuario logueado: ', response.user);
 				}
 			} catch (err) {
 				console.log('Error al intentar obtener el token de usuario. Error: ', err);
@@ -58,37 +61,60 @@ function Login() {
 	}, []);
 
     return(
-        <div className='loginContainer'>
-            <h1 className='tit'>Entidad Bancaria - Ingreso</h1>
-            <form onSubmit={handleLogin} className='form'>
-                <p>
-                    <label>Usuario: </label>
-                    <input 
-                        type='email'
-                        value={username}
-                        placeholder='Ingrese su correo electrónico'
-                        onChange={({target}) => setUsername(target.value)}
-                        required
-                    />
-                </p>
-                <p>
-                    <label>Contraseña: </label>
-                    <input 
-                        type='password'
-                        value={password}
-                        placeholder='Ingrese su contraseña'
-                        onChange={({target}) => setPassword(target.value)}
-                        required
-                    />
-                </p>
-                <p><button>INICIAR SESIÓN</button></p>
-            </form>
-            {/* <a href='/form' target='_blank'>registro</a> */}
-            <button className='btn-salida'><Link to='/form'>REGISTRARSE</Link></button>
-            {/* <button><Link to='/menu'>MENU</Link></button> */} 
+        <div className='indexCssContainers'>
+            <Divider style={styles.divider}/>
+            <Divider style={styles.divider}>ENTIDAD BANCARIA</Divider>
+            <Row justify='space-around'>
+                <Col>
+                    <Card title='INGRESO' style={styles.card}>
+                        <Form
+                            onFinish={handleLogin}
+                            onFinishFailed={handleLoginFailed}
+                        >
+                            <Form.Item
+                                label='Usuario'
+                                name='username'
+                                rules={[{ type: 'email' }, { required: true, message: 'Debe ingresar un email' }]}
+                                >
+                                <Input 
+                                    placeholder='Ingrese su correo electrónico'
+                                    type='email'
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                label='Contraseña'
+                                name='password'
+                                rules={[{ required: true, message: 'Debe ingresar una contraseña' }]}
+                                >
+                                <Input 
+                                    placeholder='Ingrese su contraseña'
+                                    type='password'
+                                />
+                            </Form.Item>
+                            <Form.Item>
+                                <Button htmlType='submit'>INICIAR SESIÓN</Button>
+                            </Form.Item>
+                        </Form>
+                    </Card>
+                </Col>
+            </Row>
+            <Divider style={styles.divider}/>
+            <Button><Link to='/reg-form'>REGISTRARSE</Link></Button>
+            <Divider style={styles.divider}/>
         </div>
     )
 
+}
+
+const styles = {
+    divider: {
+		borderWidth: 2, 
+		borderColor: 'aquamarine',
+	},
+    card: { 
+        width: 500, 
+        backgroundColor: 'aquamarine' 
+    }
 }
 
 export default Login;
