@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import '../styles/AdminMenu.css';
 import { useNavigate } from "react-router-dom";
 // Ant desing 
-import { Divider, Row, Col, Button } from "antd";
+import { Divider, Button, Alert, Space } from "antd";
 
 // Servicios
 import userService from "../services/users";
@@ -47,6 +47,20 @@ function AdminMenu() {
 
     return (
         <div className='indexCssContainers'>
+{/* 			<Space direction="vertical" style={{ width: '25%' }}>
+			    <Alert
+					hidden={true}
+					message="¿ELIMINAR DEFINITIVAMNETE?"
+					showIcon
+					type="error"
+					closable
+					action={
+						<Button type="primary" size="small" danger>
+							CONFIRMAR
+						</Button>
+					}
+				/>
+			</Space> */}
 			<Divider style={styles.divider}/>
             <Divider style={styles.divider}>ENTIDAD BANCARIA - ADMINISTRADOR - {userLoggedName}</Divider>
 			<div className='adminMenuCssScrollableArea'>

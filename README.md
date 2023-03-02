@@ -1,5 +1,5 @@
 # ProgIII-frontend-Rubino
-Parte frontend del proyecto final para Programación III
+Frontend para el proyecto final para Programación III
 
 # Install modules
 npm i

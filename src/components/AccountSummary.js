@@ -4,11 +4,10 @@
 
 function AccountSummary({ data }) {
 
-    const { cbu, alias, moneyInAccount } = data;
+    const { alias, moneyInAccount } = data;
 
     return (
         <div>
-            <p><b>CBU:</b> {cbu}</p>
             <p><b>ALIAS:</b> {alias}</p>
             <p><b>DINERO EN LA CUENTA:</b> ${moneyInAccount}</p>
             <p><b>ÚLTIMO MOVIMIENTO:</b> VER</p>

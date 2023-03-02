@@ -6,8 +6,6 @@ import { Row, Col, Button, Modal/* , message */ } from "antd";
 // Servicios
 import userService from "../services/users";
 
-
-
 function User({ data, userList, setUserList }) {
 
 	const { _id, name, isActive } = data;
@@ -41,14 +39,14 @@ function User({ data, userList, setUserList }) {
 		)
 	} */
 
-	const loguearInfoCompleta = async () => {
+	const logCompleteInfo = async () => {
 		const { data: userInfo } = await userService.getUserById(_id);
 		console.log('Detalles del usuario seleccionado: ', userInfo);
 		setUser(userInfo)
 		setIsModalOpen(true);
 	};
 
-	const modificarUsuario = async (isActive) => {
+	const modifyUser = async (isActive) => {
 		try {
 			let response = {}
 			if(isActive) {
@@ -71,7 +69,7 @@ function User({ data, userList, setUserList }) {
 		}
 	};
 
-	const eliminarUsuario = async () => {
+	const deleteUser = async () => {
 		try {
 			const response = await userService.deleteUserById(_id);
 			setUserList(userList.filter((x) => x._id !== _id));
@@ -95,16 +93,16 @@ function User({ data, userList, setUserList }) {
 			<Row style={styles.row}>
 				<Col span={18}>{name}</Col>
 				<Col span={2}>
-					<Button type='primary' onClick={loguearInfoCompleta}>DETALLES</Button>
+					<Button type='primary' onClick={logCompleteInfo}>DETALLES</Button>
 				</Col>
 				<Col span={2}>
 					{isActive
-						? <Button type='primary' danger onClick={() => modificarUsuario(isActive)}>DAR DE BAJA</Button>
-						: <Button type='primary' onClick={() => modificarUsuario(isActive)}>DAR DE ALTA</Button>
+						? <Button type='primary' danger onClick={() => modifyUser(isActive)}>DAR DE BAJA</Button>
+						: <Button type='primary' onClick={() => modifyUser(isActive)}>DAR DE ALTA</Button>
 					}
 				</Col>
 				<Col span={2}>
-					<Button type='primary' onClick={eliminarUsuario} danger>ELIMINAR</Button>
+					<Button type='primary' onClick={deleteUser} danger>ELIMINAR</Button>
 				</Col>
 			</Row>
 		</div>

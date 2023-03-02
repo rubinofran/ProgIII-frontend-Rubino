@@ -18,7 +18,6 @@ function Login() {
 
     const handleLogin = async (values) => {
         try {
-            /* console.log('Success:', values); */
             const response = await userService.validateUserAndCreateToken({
                 userName: values.username,
                 password: values.password
@@ -30,9 +29,10 @@ function Login() {
             response.data.user.role === 'admin'
                 ? navigate('/admin-menu')            
                 : navigate('/menu')
+            /* console.log('Response: ', response.data) */
         } catch (err) {
-            console.log('Password o usuario inválidos. Error: ', err);
-            error('Password o usuario inválidos')
+            console.log('Error: ...')
+            console.log(err);
         }
     };
       

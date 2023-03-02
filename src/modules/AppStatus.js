@@ -48,7 +48,6 @@ function AppStatus() {
 			<h3>{txt}</h3> */}
 			<Divider style={styles.divider} orientation='center'>LINKS</Divider>
 			<Button><Link to='/login' target='_blank'>TO MAIN APP</Link></Button>
-			{/* <Button><Link to='/pruebas' target='_blank'>TO TEST</Link></Button> */}
 			<Divider style={styles.divider}/>
 		</div>
 	)

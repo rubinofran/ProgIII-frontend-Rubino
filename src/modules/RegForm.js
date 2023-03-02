@@ -1,18 +1,14 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-/* import { useContext } from "react"; */
+import { Link, useNavigate } from "react-router-dom";
 // Ant desing 
 import { Divider, Row, Col, Form, Input, Button, message, Card, Select } from "antd";
 
 // Servicios
 import userService from "../services/users";
 
-// Contextos
-/* import { Alias } from "../context/Alias"; */
-
 function RegForm() {
 
-    /* const { aliasList } = useContext(Alias); */
+    const navigate = useNavigate();
 
     const [users, setUsers] = useState([]);
 
@@ -21,66 +17,13 @@ function RegForm() {
     const [clientType, setClientType] = useState(defaultTypes.client);
     const [accountType, setAccountType] = useState(defaultTypes.account);
 
-    /*const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [businessName, setBusinessName] = useState('')
-    const [address, setAddress] = useState('')
-
-    const [username, setUsername] = useState('') 
-    const [password, setPassword] = useState('') */
-
-/*     const error = (errorMessage) => {
-		window.alert("Error: " + errorMessage);
-	}; */
-
     const error = (errorMessage) => {
 		message.error(errorMessage);
 	};
 
-    /* const handleSubmit = async (e) => {
-        e.preventDefault()
-        try {
-            console.log(`
-                Tipo de cliente: ${clientType}
-                Información: ${
-                    clientType === defaultTypes.client 
-                        ? firstName + ' ' + lastName
-                        : businessName
-                }
-                Dirección: ${address}
-                Tipo de cuenta: ${accountType}
-                Usuario: ${username}
-                Contraseña: ${password}
-            `);
-			const newUser = await userService.createUser({
-                userName: username,
-                password,
-                clientType,
-                name: clientType === defaultTypes.client 
-                    ? firstName + ' ' + lastName
-                    : businessName,
-                address,
-                accountType, 
-                cbu: users[users.length - 1].cbu + 1, 
-                alias: 'PISO.PIEDRA.SOMBRERO', 
-                moneyInAccount: 0,
-                isActive: true,
-                createdAt: new Date(),
-                updatedAt: new Date(), 
-			});
-			setUsers([...users, newUser]);
-            setFirstName('')
-            setLastName('')
-            setBusinessName('')
-            setAddress('')
-            setUsername('')
-            setPassword('')
-        } catch (err) {
-            console.log('.... Error: ', err);
-            error('...')
-        }
-
-    } */
+    const success = (successMessage) => {
+		message.success(successMessage);
+	};
 
     const handleChangeClientType = (value) => {
         setClientType(value);
@@ -92,47 +35,53 @@ function RegForm() {
 
     const handleRegForm = async (values) => {
         try {
-            console.log(`
-                Tipo de cliente: ${clientType}
-                Información: ${
-                    clientType === defaultTypes.client 
+            if(
+                values.address.trim() === '' ||
+                values.password.trim() === '' ||
+                (clientType === defaultTypes.client && values.firstName.trim() === '') ||
+                (clientType === defaultTypes.client && values.lastName.trim() === '') ||
+                (clientType !== defaultTypes.client && values.businessName.trim() === '') 
+            ) {
+                error('Algunos de los campos están vacíos')
+                console.log('Error: algunos de los campos están vacíos')
+            } else if(users.some(u => u.userName === values.username)) {
+                error(`El usuario/email ${values.username} ya existe`)
+                console.log(`Error: el usuario/email ${values.username} ya existe`)
+            } else {
+                console.log(`
+                    Tipo de cliente: ${clientType}
+                    Información: ${
+                        clientType === defaultTypes.client 
+                            ? values.firstName + ' ' + values.lastName
+                            : values.businessName
+                    }
+                    Dirección: ${values.address}
+                    Tipo de cuenta: ${accountType}
+                    Usuario: ${values.username}
+                    Contraseña: ${values.password}
+                `);
+                const date = new Date() 
+                const creationDate = `${date.getDate() > 9 ? '' : '0'}${date.getDate()}/${date.getDate() > 8 ? '' : '0'}${date.getMonth() + 1}/${date.getFullYear()} Hora: ${date.getHours() > 9 ? '' : '0'}${date.getHours()}:${date.getMinutes() > 9 ? '' : '0'}${date.getMinutes()}`
+			    const response = await userService.createUser({
+                    userName: values.username,
+                    password: values.password,
+                    clientType,
+                    name: clientType === defaultTypes.client 
                         ? values.firstName + ' ' + values.lastName
-                        : values.businessName
-                }
-                Dirección: ${values.address}
-                Tipo de cuenta: ${accountType}
-                Usuario: ${values.username}
-                Contraseña: ${values.password}
-            `);
-            const date = new Date() 
-            const creationDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} Hora: ${date.getHours()}:${date.getMinutes() > 9 ? '' : '0'}${date.getMinutes()}`
-			const newUser = await userService.createUser({
-                userName: values.username,
-                password: values.password,
-                clientType,
-                name: clientType === defaultTypes.client 
-                    ? values.firstName + ' ' + values.lastName
-                    : values.businessName,
-                address: values.address,
-                accountType, 
-                cbu: users[users.length - 1].cbu + 1, 
-                alias: 'PISO.PINTURA.SOMBRERO', 
-                moneyInAccount: 0,
-                isActive: true,
-                role: 'user',
-                createdAt: creationDate,
-                updatedAt: creationDate, 
-			});
- 			setUsers([...users, newUser]);
-            /*setFirstName('')
-            setLastName('')
-            setBusinessName('')
-            setAddress('')
-            setUsername('')
-            setPassword('') */
+                        : values.businessName,
+                    address: values.address,
+                    accountType,
+                    role: 'user',
+                    createdAt: creationDate,
+                    updatedAt: creationDate, 
+			    });
+                console.log('Response: ', response.data)
+                success('Nuevo usuario creado')
+                navigate("/login");
+            }
         } catch (err) {
-            console.log('.... Error: ', err);
-            error('...')
+            console.log('Error: ...')
+            console.log(err);
         }
 
     }

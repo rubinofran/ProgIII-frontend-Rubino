@@ -12,6 +12,7 @@ import userService from "../services/users";
 import AccountInformation from "../components/AccountInformation";
 import AccountSummary from "../components/AccountSummary";
 import Operations from "../components/Operations";
+import Transfers from "../components/Transfers";
 
 function Menu() {
 
@@ -26,6 +27,7 @@ function Menu() {
         if(opt === 1) { return 'RESUMEN' }
         if(opt === 2) { return 'EXTRACCIÓN' }
         if(opt === 3) { return 'DEPÓSITO' }
+        if(opt === 4) { return 'TRANSFERENCIA' }
         return 'INFORMACIÓN'
     }
 
@@ -54,6 +56,14 @@ function Menu() {
                 return 'Usuario dado de baja. No puede realizar depósitos'
             }
             return <Operations data={user} isExtraction={false} setUser={setUser}/>
+        }
+        if(opt === 4) {
+            /* console.log('El usuario intenta realizar una transferencia'); */
+            if(!userLoggedState) {
+                console.log('Usuario dado de baja. No puede realizar transferencias')
+                return 'Usuario dado de baja. No puede realizar transferencias'
+            }
+            return <Transfers data={user} setUser={setUser}/>
         }
         console.log('El usuario intenta ver la información de la cuenta');
         return <AccountInformation data={user}/>
@@ -98,6 +108,7 @@ function Menu() {
                         <p><Button onClick={() => setOpt(1)}>RESUMEN</Button></p>
                         <p><Button onClick={() => setOpt(2)}>EXTRACCIÓN</Button></p>
                         <p><Button onClick={() => setOpt(3)}>DEPÓSITO</Button></p>
+                        <p><Button onClick={() => setOpt(4)}>TRANSFERENCIA</Button></p>
                     </Card>
                 </Col>
                 <Col>

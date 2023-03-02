@@ -12,6 +12,10 @@ function Operations({ data, isExtraction, setUser }) {
     const defaultAmount = 0
     const [amount, setAmount] = useState(defaultAmount)
 
+	const error = (errorMessage) => {
+		message.error(errorMessage);
+	};
+
     // Simulación de la operación física
     const operationSimulation = (data) => {
         const key = 'simulation'
@@ -22,29 +26,37 @@ function Operations({ data, isExtraction, setUser }) {
         });
         setTimeout(() => {
             // Se podrán ver los cambios una vez finalizada la operación
-            console.log('Response: ', data);
+            /* console.log('Response: ', data); */
             setUser(data);
             message.open({
                 key,
                 type: 'success',
-                content: isExtraction ? 'Retire su dinero' : 'Depósito exitoso',
+                content: isExtraction ? 'Extracción exitosa' : 'Depósito exitoso',
                 duration: 10,
             });
         }, 1000);
 	};
 
-    const modificarUsuario = async () => {
+    const modifyUser = async () => {
         try {
             isExtraction 
                 ? console.log('El usuario intenta realizar una extracción de $', amount) 
                 : console.log('El usuario intenta realizar un depósito de $', amount) 
-            const newAmount = isExtraction
-                ? (moneyInAccount - amount)
-                : (moneyInAccount + amount)
-            const response = await userService.updateUserById(_id, {
-                moneyInAccount: newAmount
-			});
-            operationSimulation(response.data)
+            if(Number(amount) <= 0) {
+                error('Debe ingresar un importe mayor a 0')
+                console.log('Error: debe ingresar un importe mayor a 0')
+            } else if (isExtraction && moneyInAccount == 0) {
+                error('La cuenta no tiene fondos')
+                console.log('Error: La cuenta no tiene fondos')
+            } else {
+                const newAmount = isExtraction
+                    ? (moneyInAccount - Number(amount))
+                    : (moneyInAccount + Number(amount))
+                const response = await userService.updateUserById(_id, {
+                    moneyInAccount: newAmount
+			    });
+                operationSimulation(response.data)
+            }
 		} catch (err) {
             isExtraction 
                 ? console.log('Error al intentar realizar una extracción') 
@@ -59,20 +71,22 @@ function Operations({ data, isExtraction, setUser }) {
             <p><b>IMPORTE A {isExtraction ? 'RETIRAR' : 'DEPOSITAR'}:</b></p>
             <Input 
                 style={styles.input}
-                placeholder='Ingrese otro importe'
+                placeholder='Ingrese un importe'
                 type='number'
+                min='0'
                 defaultValue={defaultAmount}
-                onChange={({target}) => setAmount(target.value)} /* ({target}) => handleInputChange(target.value) */
+                onChange={({target}) => setAmount(target.value)} 
             />
-            <p><Button onClick={modificarUsuario}>CONFIRMAR</Button></p>    
+            <Button onClick={modifyUser}>CONFIRMAR</Button>
         </div>
     )
 }
 
 const styles = {
     input: {
-        marginLeft: 10, 
-        width: 200, 
+        marginRight: 10, 
+        width: 300,
+        textAlign: 'center' 
     },
 }
 
