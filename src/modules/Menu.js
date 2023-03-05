@@ -22,6 +22,7 @@ function Menu() {
     const [userLoggedState, setUserLoggedState] = useState(Boolean);
     const [opt, setOpt] = useState(0);    
     const [userTransactions, setUserTransactions] = useState([])
+    const [token, setToken] = useState('')
 
     const navigate = useNavigate();
 
@@ -49,7 +50,7 @@ function Menu() {
                 console.log('Usuario dado de baja. No puede realizar extracciones')
                 return 'Usuario dado de baja. No puede realizar extracciones'
             }
-            return <Operations data={user} isExtraction={true} setUser={setUser} transactions={userTransactions} setTransactions={setUserTransactions}/>
+            return <Operations data={user} isExtraction={true} setUser={setUser} transactions={userTransactions} setTransactions={setUserTransactions} token={token}/>
         }
         if(opt === 3) {
             /* console.log('El usuario intenta realizar un depósito'); */
@@ -57,7 +58,7 @@ function Menu() {
                 console.log('Usuario dado de baja. No puede realizar depósitos')
                 return 'Usuario dado de baja. No puede realizar depósitos'
             }
-            return <Operations data={user} isExtraction={false} setUser={setUser} transactions={userTransactions} setTransactions={setUserTransactions}/>
+            return <Operations data={user} isExtraction={false} setUser={setUser} transactions={userTransactions} setTransactions={setUserTransactions} token={token}/>
         }
         if(opt === 4) {
             /* console.log('El usuario intenta realizar una transferencia'); */
@@ -65,7 +66,7 @@ function Menu() {
                 console.log('Usuario dado de baja. No puede realizar transferencias')
                 return 'Usuario dado de baja. No puede realizar transferencias'
             }
-            return <Transfers data={user} setUser={setUser} transactions={userTransactions} setTransactions={setUserTransactions}/>
+            return <Transfers data={user} setUser={setUser} transactions={userTransactions} setTransactions={setUserTransactions} token={token}/>
         }
         console.log('El usuario intenta ver la información de la cuenta');
         return <AccountInformation data={user}/>
@@ -84,20 +85,23 @@ function Menu() {
                     console.log('Local storage vacío');
                     navigate("/login");
 				} else {
+                    setToken(userLogged.token)
 					console.log('Usuario logueado: ', userLogged.user);
                     setUserLoggedName(userLogged.user.name);
                     setUserLoggedState(userLogged.user.isActive);
-                    let response = await userService.getUserById(userLogged.user._id);
+                    let response = await userService.getUserById(userLogged.user._id, userLogged.token);
                     setUser(response.data);
-                    response = await transactionService.getAllTransactionsByUserId(userLogged.user._id)
+                    response = await transactionService.getAllTransactionsByUserId(userLogged.user._id, userLogged.token)
                     setUserTransactions(response.data)
 				}
 			} catch (err) {
 				console.log('Error al intentar obtener el token de usuario. Error: ', err);
+                localStorageService.deleteLS();
                 navigate("/login");
 			}
 		}
 		menu();
+        // eslint-disable-next-line 
 	}, []);
 
     return(

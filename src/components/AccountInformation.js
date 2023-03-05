@@ -1,4 +1,4 @@
-/* import { useState } from "react"; */
+
 // Ant desing 
 import { Row, Col } from "antd";
 
@@ -10,7 +10,7 @@ function AccountInformation({ data }) {
         <div>
             <Row>
                 <Col span={12}>
-                    <p><b>NOMBRE:</b> {name}</p> {/* consultar si es razón social */}
+                    <p><b>{clientType === 'Persona física' ? 'NOMBRE:' : 'RAZÓN SOCIAL:'}</b> {name}</p>
                     <p><b>DIRECCIÓN:</b> {address}</p>
                     <p><b>TIPO DE CLIENTE:</b> {clientType}</p>
                 </Col>

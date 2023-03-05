@@ -1,27 +1,22 @@
 import { useState } from "react";
 // Ant desing 
-import { /* Row, Col,  */Button, message, /*Alert,  */Input} from "antd";
+import { Button, message, Input} from "antd";
 
 // Servicios
 import userService from "../services/users";
 import transactionService from "../services/transactions";
 
-function Transfers({ data, setUser, transactions, setTransactions }) {
+function Transfers({ data, setUser, transactions, setTransactions, token }) {
 
     const { _id, moneyInAccount, alias } = data;
 
     const defaultAmount = 0
     const [aliasSearched, setAliasSearched] = useState('')
     const [moneyToTransfer, setMoneyToTransfer] = useState(0)
-    const [addressee, setAddressee] = useState({ _id: '', userName: '', name: '', moneyInAccount: 0})
+    const [addressee, setAddressee] = useState({ _id: '', userName: '', name: '', moneyInAccount: 0, isActive: false})
 
-    const warning = (warningMessage) => {
-		message.warning(warningMessage);
-	};
-
-    const error = (errorMessage) => {
-		message.error(errorMessage);
-	};
+    const error = errorMessage => message.error(errorMessage);
+	const warning = warningMessage => message.warning(warningMessage);
 
     // Simulación de la operación física
     const operationSimulation = (data, transactionData) => {
@@ -54,13 +49,14 @@ function Transfers({ data, setUser, transactions, setTransactions }) {
             if(alias === aliasSearched) {
                 warning('El ALIAS ingresado es el suyo propio, intente con otro')
             } else {
-                const response = await userService.getUserByAlias(aliasSearched);
+                const response = await userService.getUserByAlias(aliasSearched, token);
                 setAddressee(response.data)
             }   
 		} catch (err) {
-            setAddressee({ _id: '', userName: '', name: '', moneyInAccount: 0})
-            console.log('Error al intentar encontrar un destinatario con alias ', aliasSearched) 
-			console.log(err);
+            setAddressee({ _id: '', userName: '', name: '', moneyInAccount: 0, isActive: false})
+			/* console.log(err); */
+            console.log(err.response.data);
+            error(err.response.data);
 		}
     }
 
@@ -70,26 +66,33 @@ function Transfers({ data, setUser, transactions, setTransactions }) {
             if(Number(moneyToTransfer) <= 0) {
                 error('Debe ingresar un importe mayor a 0')
                 console.log('Error: debe ingresar un importe mayor a 0')
+            } else if (moneyInAccount === 0) { 
+                error('La cuenta no tiene fondos suficientes para transferir')
+                console.log('Error: La cuenta no tiene fondos suficientes para transferir')
+            } else if(!addressee.isActive) { 
+                error('La cuenta no se encuentra activa para transferirle')
+                console.log('Error: La cuenta no se encuentra activa para transferirle')
             } else {
                 let newAmount = addressee.moneyInAccount + Number(moneyToTransfer)
                 const addresseeResponse = await userService.updateUserById(addressee._id, {
                     moneyInAccount: newAmount
-			    });
-                /* console.log('Addresee response: ', addresseeResponse.data); */
+			    }, token);
+                console.log('Addresee response: ', addresseeResponse.data);
                 newAmount = moneyInAccount - Number(moneyToTransfer)
                 const response = await userService.updateUserById(_id, {
                     moneyInAccount: newAmount
-			    });
+			    }, token);
                 const transactionResponse = await transactionService.createTransaction({
                     transactionType: 'transfer',
                     userId: _id,
                     amount: Number(moneyToTransfer)
-                })
+                }, token)
                 operationSimulation(response.data, transactionResponse.data)
             }
 		} catch (err) {
-            console.log('Error al intentar realizar una transferencia al destinatario con alias ', aliasSearched) 
-			console.log(err);
+			/* console.log(err); */
+            console.log(err.response.data);
+            error(err.response.data);
 		}
     }
 

@@ -17,4 +17,8 @@ function Transaction({ data }) {
     return <p>{createdAt}, <b>{translateAux()}</b> de <b>${amount}</b></p>
 }
 
+/* const styles = {
+	
+} */
+
 export default Transaction;

@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import Router from "./routes/index";
-import { AuxContext } from "./context/AuxContext";
+
+// Contextos
+import { AuxContext } from "./context/AuxContext"; // unused
 
 function App() {
 
@@ -8,7 +10,7 @@ function App() {
 	const txtProvider = useMemo(
 		() => ({ txt, setTxt }),
 		[txt, setTxt]
-	);
+	); // unused
 
   return (
     <AuxContext.Provider value={txtProvider}>

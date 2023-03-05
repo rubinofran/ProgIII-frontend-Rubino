@@ -17,11 +17,12 @@ function AdminMenu() {
 	const [users, setUsers] = useState([]);
 	const [userLoggedName, setUserLoggedName] = useState('')
 	const [transactions, setTransactions] = useState([])
+	const [token, setToken] = useState('')
 
     const navigate = useNavigate()
 
 	const handleDeslog = () => {
-		localStorageService.deleteLS()
+		localStorageService.deleteLS();
 		navigate("/login")
 	}
 
@@ -33,19 +34,22 @@ function AdminMenu() {
                     console.log('Local storage vacío');
                     navigate("/login");
 				} else {
-					console.log('Usuario logueado: ', userLogged.user);
+					setToken(userLogged.token)
+					console.log('Usuario logueado!!!: ', userLogged.user);
                     setUserLoggedName(userLogged.user.name);
-					let response = await userService.getUsers();
+					let response = await userService.getUsers(userLogged.token);
 					setUsers(response.data.filter((x) => x.role.name !== 'admin'));
-					response = await transactionService.getAllTransactions()
+					response = await transactionService.getAllTransactions(userLogged.token)
                     setTransactions(response.data)
 				}
 			} catch (err) {
 				console.log('Error al intentar obtener el token de usuario. Error: ', err);
+				localStorageService.deleteLS();
 				navigate("/login");
 			}
 		}
 		adminMenu();
+		// eslint-disable-next-line 
 	}, []);
 
     return (
@@ -60,6 +64,7 @@ function AdminMenu() {
 						userList={users}
 						setUserList={setUsers}
 						transactionList={transactions}
+						token={token}
 					></User>
 				))}
 			</div>

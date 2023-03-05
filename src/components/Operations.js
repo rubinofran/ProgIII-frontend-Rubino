@@ -6,16 +6,15 @@ import { Button , message, Input } from "antd";
 import userService from "../services/users";
 import transactionService from "../services/transactions";
 
-function Operations({ data, isExtraction, setUser, transactions, setTransactions }) {
+function Operations({ data, isExtraction, setUser, transactions, setTransactions, token }) {
 
     const { _id, moneyInAccount } = data;
 
     const defaultAmount = 0
     const [amount, setAmount] = useState(defaultAmount)
 
-	const error = (errorMessage) => {
-		message.error(errorMessage);
-	};
+	const error = errorMessage => message.error(errorMessage);
+    /* const warning = (warningMessage) => message.warning(warningMessage); */
 
     // Simulación de la operación física
     const operationSimulation = (data, transactionData) => {
@@ -50,28 +49,29 @@ function Operations({ data, isExtraction, setUser, transactions, setTransactions
             if(Number(amount) <= 0) {
                 error('Debe ingresar un importe mayor a 0')
                 console.log('Error: debe ingresar un importe mayor a 0')
-            } else if (isExtraction && moneyInAccount === 0) {
-                error('La cuenta no tiene fondos')
-                console.log('Error: La cuenta no tiene fondos')
+            } else if (isExtraction && (moneyInAccount === 0 || moneyInAccount < Number(amount))) {
+                error('La cuenta no tiene fondos suficientes')
+                console.log('Error: La cuenta no tiene fondos suficientes')
             } else {
                 const newAmount = isExtraction
                     ? (moneyInAccount - Number(amount))
                     : (moneyInAccount + Number(amount))
                 const response = await userService.updateUserById(_id, {
                     moneyInAccount: newAmount
-			    });
+			    }, token);
                 const transactionResponse = await transactionService.createTransaction({
                     transactionType: isExtraction ? 'extraction' : 'deposit',
                     userId: _id,
                     amount: Number(amount)
-                })
+                }, token)
                 operationSimulation(response.data, transactionResponse.data)
             }
 		} catch (err) {
+            /* console.log(err); */
             isExtraction 
-                ? console.log('Error al intentar realizar una extracción') 
-                : console.log('Error al intentar realizar un depósito') 
-			console.log(err);
+                ? error('Error al intentar realizar una extracción') 
+                : error('Error al intentar realizar un depósito')
+            console.log(err.response.data);
 		}
     }
 

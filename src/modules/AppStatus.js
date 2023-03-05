@@ -3,7 +3,7 @@ import logo from "../assets/logo.svg";
 import { Link } from "react-router-dom";
 import { apiBaseUrl } from "../constants";
 import axios from "axios";
-/* import { useContext } from "react"; */
+/* import { useContext } from "react"; // unused */
 // Ant desing
 import { Divider, Row, Col, Button } from "antd";
 
@@ -11,12 +11,12 @@ import { Divider, Row, Col, Button } from "antd";
 import localStorageService from "../services/localStorage";
 
 // Contextos
-/* import { AuxContext } from "../context/AuxContext"; */
+/* import { AuxContext } from "../context/AuxContext"; // unused */
 
 function AppStatus() {
 
 	const [status, setStatus] = useState({});
-	/* const { txt } = useContext(AuxContext); */
+	/* const { txt } = useContext(AuxContext); // unused */
 
 	useEffect(() => {
 		async function fetchData() {
@@ -49,7 +49,7 @@ function AppStatus() {
 				</Col>
 			</Row>
 			{/* <Divider style={styles.divider} orientation='center'>AUX</Divider>
-			<h3>{txt}</h3> */}
+			<h3>{txt}</h3>*/}
 			<Divider style={styles.divider} orientation='center'>LINKS</Divider>
 			<Button><Link to='/login' target='_blank'>TO MAIN APP</Link></Button>
 			<Divider style={styles.divider}/>

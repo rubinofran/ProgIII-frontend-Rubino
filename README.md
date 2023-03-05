@@ -2,7 +2,7 @@
 Frontend para el proyecto final para Programación III
 
 # Description
-Mediante un login se puede acceder a la web app de un banco, en donde se 
+Mediante un login se puede acceder a la web app de un banco, en donde se  
 gestionan cuentas de usuarios y administradores con distintas acciones
 
 # Install modules
@@ -12,7 +12,11 @@ npm i
 npm start
 
 # About
-Frontend: REACT 
-Librería UI: ANT DESIGN 
-Ruteo: react-router-dom 
-Variables de entorno: DOT ENV 
+Frontend: REACT  
+Librería UI: ANT DESIGN  
+Ruteo: react-router-dom  
+Variables de entorno: DOT ENV
+
+# About .env
+Se trata de una variable de entorno que en este caso es compartida  
+pero normalmente sería ignorada desde .gitignore

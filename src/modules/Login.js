@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // Ant desing 
 import { Divider, Row, Col, Form, Input, Button, message, Card } from "antd"; 
@@ -6,44 +6,35 @@ import { Divider, Row, Col, Form, Input, Button, message, Card } from "antd";
 
 // Servicios
 import localStorageService from "../services/localStorage";
-import userService from "../services/users";
+import authService from "../services/auth";
 
 function Login() {
-
-    const navigate = useNavigate();
     
-    const [users, setUsers] = useState([]);
+    const navigate = useNavigate();
 
-	const error = (errorMessage) => {
-		message.error(errorMessage);
-	};
+	const error = errorMessage => message.error(errorMessage);
 
     const handleLogin = async (values) => {
         try {
             if(values.password.trim() === '') {
                 error('La contraseña no puede estar vacía')
                 console.log('Error: la contraseña no puede estar vacía')
-            } /* else if(users.every(u => u.userName !== values.username)) { 
-                error(`El usuario/email ${values.username} no se encuentra registrado`)
-                console.log(`Error: el usuario/email ${values.username} no se encuentra registrado`)
-            } */ else {
-                const response = await userService.validateUserAndCreateToken({
+            } else {
+                const response = await authService.validateUserAndCreateToken({
                     userName: values.username,
                     password: values.password
-                }); // esto
-                /* if (response.data.token) { */
-                    const payload = { user: response.data.user, token: response.data.token };
-                    localStorageService.setLS(payload); // esto
-                /* } */
+                }); 
+                const payload = { user: response.data.user, token: response.data.token };
+                localStorageService.setLS(payload)
                 response.data.user.role === 'admin'
-                    ? navigate('/admin-menu')            
-                    : navigate('/menu') // esto
-                /* console.log('Response: ', response.data) */
+                    ? navigate('/admin-menu')           
+                    : navigate('/menu') 
+                console.log('Response: ', response.data)
             }
         } catch (err) {
             /* console.log(err) */
             console.log(err.response.data);
-            error(err.response.data)
+            error(err.response.data);
         }
     };
       
@@ -64,8 +55,6 @@ function Login() {
 				} else {
 					console.log('Usuario logueado: ', response.user);
 				}
-                response = await userService.getUsers();
-			    setUsers(response.data);
 			} catch (err) {
 				console.log('Error al intentar obtener el token de usuario. Error: ', err);
 			}

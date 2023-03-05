@@ -1,6 +1,3 @@
-/* import { useState, useEffect } from "react"; */
-// Ant desing 
-/* import { Row, Col, Button, message, Alert } from "antd"; */
 
 function AccountSummary({ data, transactions }) {
 
