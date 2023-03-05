@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import '../styles/AdminMenu.css';
 import { useNavigate } from "react-router-dom";
 // Ant desing 
-import { Divider, Button, Alert, Space } from "antd";
+import { Divider, Button } from "antd";
 
 // Servicios
 import userService from "../services/users";
 import localStorageService from "../services/localStorage";
+import transactionService from "../services/transactions";
 
 // Componentes
 import User from "../components/User";
@@ -15,6 +16,7 @@ function AdminMenu() {
 
 	const [users, setUsers] = useState([]);
 	const [userLoggedName, setUserLoggedName] = useState('')
+	const [transactions, setTransactions] = useState([])
 
     const navigate = useNavigate()
 
@@ -33,9 +35,10 @@ function AdminMenu() {
 				} else {
 					console.log('Usuario logueado: ', userLogged.user);
                     setUserLoggedName(userLogged.user.name);
-					const response = await userService.getUsers();
-					/* console.log(response) */
+					let response = await userService.getUsers();
 					setUsers(response.data.filter((x) => x.role.name !== 'admin'));
+					response = await transactionService.getAllTransactions()
+                    setTransactions(response.data)
 				}
 			} catch (err) {
 				console.log('Error al intentar obtener el token de usuario. Error: ', err);
@@ -47,20 +50,6 @@ function AdminMenu() {
 
     return (
         <div className='indexCssContainers'>
-{/* 			<Space direction="vertical" style={{ width: '25%' }}>
-			    <Alert
-					hidden={true}
-					message="¿ELIMINAR DEFINITIVAMNETE?"
-					showIcon
-					type="error"
-					closable
-					action={
-						<Button type="primary" size="small" danger>
-							CONFIRMAR
-						</Button>
-					}
-				/>
-			</Space> */}
 			<Divider style={styles.divider}/>
             <Divider style={styles.divider}>ENTIDAD BANCARIA - ADMINISTRADOR - {userLoggedName}</Divider>
 			<div className='adminMenuCssScrollableArea'>
@@ -70,6 +59,7 @@ function AdminMenu() {
 						data={x}
 						userList={users}
 						setUserList={setUsers}
+						transactionList={transactions}
 					></User>
 				))}
 			</div>

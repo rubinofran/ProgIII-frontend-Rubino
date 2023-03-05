@@ -60,8 +60,6 @@ function RegForm() {
                     Usuario: ${values.username}
                     Contraseña: ${values.password}
                 `);
-                const date = new Date() 
-                const creationDate = `${date.getDate() > 9 ? '' : '0'}${date.getDate()}/${date.getDate() > 8 ? '' : '0'}${date.getMonth() + 1}/${date.getFullYear()} Hora: ${date.getHours() > 9 ? '' : '0'}${date.getHours()}:${date.getMinutes() > 9 ? '' : '0'}${date.getMinutes()}`
 			    const response = await userService.createUser({
                     userName: values.username,
                     password: values.password,
@@ -71,9 +69,7 @@ function RegForm() {
                         : values.businessName,
                     address: values.address,
                     accountType,
-                    role: 'user',
-                    createdAt: creationDate,
-                    updatedAt: creationDate, 
+                    role: 'user'
 			    });
                 console.log('Response: ', response.data)
                 success('Nuevo usuario creado')

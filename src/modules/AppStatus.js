@@ -35,14 +35,18 @@ function AppStatus() {
 			<h3>APP STATUS</h3>
 			<Divider style={styles.divider} orientation='center'>API</Divider>
 			<Row>
-				<Col span={6}></Col>
 				<Col span={6}>
 					<b>NOMBRE:</b> {JSON.stringify(status.name)}
 				</Col>
 				<Col span={6}>
 					<b>VERSIÓN:</b> {JSON.stringify(status.version)}
 				</Col>
-				<Col span={6}></Col>
+				<Col span={6}>
+					<b>PUERTO:</b> {JSON.stringify(status.port)} 
+				</Col>
+				<Col span={6}>
+					<b>AMBIENTE:</b> {JSON.stringify(status.environment)}
+				</Col>
 			</Row>
 			{/* <Divider style={styles.divider} orientation='center'>AUX</Divider>
 			<h3>{txt}</h3> */}

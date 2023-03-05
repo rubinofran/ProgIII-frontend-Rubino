@@ -7,6 +7,7 @@ import { Divider, Row, Col, Card, Button } from "antd";
 // Servicios
 import localStorageService from "../services/localStorage";
 import userService from "../services/users";
+import transactionService from "../services/transactions";
 
 // Componentes
 import AccountInformation from "../components/AccountInformation";
@@ -19,7 +20,8 @@ function Menu() {
     const [user, setUser] = useState({});
     const [userLoggedName, setUserLoggedName] = useState('');
     const [userLoggedState, setUserLoggedState] = useState(Boolean);
-    const [opt, setOpt] = useState(0);
+    const [opt, setOpt] = useState(0);    
+    const [userTransactions, setUserTransactions] = useState([])
 
     const navigate = useNavigate();
 
@@ -39,7 +41,7 @@ function Menu() {
                 console.log('Usuario dado de baja. No puede visualizar el resumen de cuenta')
                 return 'Usuario dado de baja. No puede visualizar el resumen de cuenta'
             }
-            return <AccountSummary data={user}/>
+            return <AccountSummary data={user} transactions={userTransactions}/>
         }
         if(opt === 2) {
             /* console.log('El usuario intenta realizar una extracción'); */
@@ -47,7 +49,7 @@ function Menu() {
                 console.log('Usuario dado de baja. No puede realizar extracciones')
                 return 'Usuario dado de baja. No puede realizar extracciones'
             }
-            return <Operations data={user} isExtraction={true} setUser={setUser}/>
+            return <Operations data={user} isExtraction={true} setUser={setUser} transactions={userTransactions} setTransactions={setUserTransactions}/>
         }
         if(opt === 3) {
             /* console.log('El usuario intenta realizar un depósito'); */
@@ -55,7 +57,7 @@ function Menu() {
                 console.log('Usuario dado de baja. No puede realizar depósitos')
                 return 'Usuario dado de baja. No puede realizar depósitos'
             }
-            return <Operations data={user} isExtraction={false} setUser={setUser}/>
+            return <Operations data={user} isExtraction={false} setUser={setUser} transactions={userTransactions} setTransactions={setUserTransactions}/>
         }
         if(opt === 4) {
             /* console.log('El usuario intenta realizar una transferencia'); */
@@ -63,7 +65,7 @@ function Menu() {
                 console.log('Usuario dado de baja. No puede realizar transferencias')
                 return 'Usuario dado de baja. No puede realizar transferencias'
             }
-            return <Transfers data={user} setUser={setUser}/>
+            return <Transfers data={user} setUser={setUser} transactions={userTransactions} setTransactions={setUserTransactions}/>
         }
         console.log('El usuario intenta ver la información de la cuenta');
         return <AccountInformation data={user}/>
@@ -85,9 +87,10 @@ function Menu() {
 					console.log('Usuario logueado: ', userLogged.user);
                     setUserLoggedName(userLogged.user.name);
                     setUserLoggedState(userLogged.user.isActive);
-                    const response = await userService.getUserById(userLogged.user._id);
-                    /* console.log(response) */
+                    let response = await userService.getUserById(userLogged.user._id);
                     setUser(response.data);
+                    response = await transactionService.getAllTransactionsByUserId(userLogged.user._id)
+                    setUserTransactions(response.data)
 				}
 			} catch (err) {
 				console.log('Error al intentar obtener el token de usuario. Error: ', err);

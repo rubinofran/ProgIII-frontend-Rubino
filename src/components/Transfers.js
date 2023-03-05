@@ -4,8 +4,9 @@ import { /* Row, Col,  */Button, message, /*Alert,  */Input} from "antd";
 
 // Servicios
 import userService from "../services/users";
+import transactionService from "../services/transactions";
 
-function Transfers({ data, setUser }) {
+function Transfers({ data, setUser, transactions, setTransactions }) {
 
     const { _id, moneyInAccount, alias } = data;
 
@@ -23,7 +24,7 @@ function Transfers({ data, setUser }) {
 	};
 
     // Simulación de la operación física
-    const operationSimulation = (addresseeData, data) => {
+    const operationSimulation = (data, transactionData) => {
         const key = 'simulation'
         message.open({
             key,
@@ -32,9 +33,12 @@ function Transfers({ data, setUser }) {
         });
         setTimeout(() => {
             // Se podrán ver los cambios una vez finalizada la operación
-            /* console.log('Addresee response: ', addresseeData);
-            console.log('Response: ', data); */
+            /* console.log('Response: ', data); */
+            /* console.log('Response: ', transactionData);  */
             setUser(data);
+            // Mejorable, correción por ObjectId
+            transactionData.transactionType = { typeName: 'transfer' }
+            setTransactions([...transactions, transactionData]) 
             message.open({
                 key,
                 type: 'success',
@@ -71,11 +75,17 @@ function Transfers({ data, setUser }) {
                 const addresseeResponse = await userService.updateUserById(addressee._id, {
                     moneyInAccount: newAmount
 			    });
+                /* console.log('Addresee response: ', addresseeResponse.data); */
                 newAmount = moneyInAccount - Number(moneyToTransfer)
                 const response = await userService.updateUserById(_id, {
                     moneyInAccount: newAmount
 			    });
-                operationSimulation(addresseeResponse.data, response.data)
+                const transactionResponse = await transactionService.createTransaction({
+                    transactionType: 'transfer',
+                    userId: _id,
+                    amount: Number(moneyToTransfer)
+                })
+                operationSimulation(response.data, transactionResponse.data)
             }
 		} catch (err) {
             console.log('Error al intentar realizar una transferencia al destinatario con alias ', aliasSearched) 

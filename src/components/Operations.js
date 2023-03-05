@@ -4,8 +4,9 @@ import { Button , message, Input } from "antd";
 
 // Servicios
 import userService from "../services/users";
+import transactionService from "../services/transactions";
 
-function Operations({ data, isExtraction, setUser }) {
+function Operations({ data, isExtraction, setUser, transactions, setTransactions }) {
 
     const { _id, moneyInAccount } = data;
 
@@ -17,7 +18,7 @@ function Operations({ data, isExtraction, setUser }) {
 	};
 
     // Simulación de la operación física
-    const operationSimulation = (data) => {
+    const operationSimulation = (data, transactionData) => {
         const key = 'simulation'
         message.open({
             key,
@@ -27,7 +28,11 @@ function Operations({ data, isExtraction, setUser }) {
         setTimeout(() => {
             // Se podrán ver los cambios una vez finalizada la operación
             /* console.log('Response: ', data); */
+            /* console.log('Response: ', transactionData);  */
             setUser(data);
+            // Mejorable, correción por ObjectId
+            transactionData.transactionType = { typeName: isExtraction ? 'extraction' : 'deposit' }
+            setTransactions([...transactions, transactionData]) 
             message.open({
                 key,
                 type: 'success',
@@ -45,7 +50,7 @@ function Operations({ data, isExtraction, setUser }) {
             if(Number(amount) <= 0) {
                 error('Debe ingresar un importe mayor a 0')
                 console.log('Error: debe ingresar un importe mayor a 0')
-            } else if (isExtraction && moneyInAccount == 0) {
+            } else if (isExtraction && moneyInAccount === 0) {
                 error('La cuenta no tiene fondos')
                 console.log('Error: La cuenta no tiene fondos')
             } else {
@@ -55,7 +60,12 @@ function Operations({ data, isExtraction, setUser }) {
                 const response = await userService.updateUserById(_id, {
                     moneyInAccount: newAmount
 			    });
-                operationSimulation(response.data)
+                const transactionResponse = await transactionService.createTransaction({
+                    transactionType: isExtraction ? 'extraction' : 'deposit',
+                    userId: _id,
+                    amount: Number(amount)
+                })
+                operationSimulation(response.data, transactionResponse.data)
             }
 		} catch (err) {
             isExtraction 

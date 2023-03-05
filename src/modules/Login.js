@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // Ant desing 
 import { Divider, Row, Col, Form, Input, Button, message, Card } from "antd"; 
@@ -12,27 +12,38 @@ function Login() {
 
     const navigate = useNavigate();
     
+    const [users, setUsers] = useState([]);
+
 	const error = (errorMessage) => {
 		message.error(errorMessage);
 	};
 
     const handleLogin = async (values) => {
         try {
-            const response = await userService.validateUserAndCreateToken({
-                userName: values.username,
-                password: values.password
-            });
-            if (response.data.token) {
-                const payload = { user: response.data.user, token: response.data.token };
-                localStorageService.setLS(payload);
+            if(values.password.trim() === '') {
+                error('La contraseña no puede estar vacía')
+                console.log('Error: la contraseña no puede estar vacía')
+            } /* else if(users.every(u => u.userName !== values.username)) { 
+                error(`El usuario/email ${values.username} no se encuentra registrado`)
+                console.log(`Error: el usuario/email ${values.username} no se encuentra registrado`)
+            } */ else {
+                const response = await userService.validateUserAndCreateToken({
+                    userName: values.username,
+                    password: values.password
+                }); // esto
+                /* if (response.data.token) { */
+                    const payload = { user: response.data.user, token: response.data.token };
+                    localStorageService.setLS(payload); // esto
+                /* } */
+                response.data.user.role === 'admin'
+                    ? navigate('/admin-menu')            
+                    : navigate('/menu') // esto
+                /* console.log('Response: ', response.data) */
             }
-            response.data.user.role === 'admin'
-                ? navigate('/admin-menu')            
-                : navigate('/menu')
-            /* console.log('Response: ', response.data) */
         } catch (err) {
-            console.log('Error: ...')
-            console.log(err);
+            /* console.log(err) */
+            console.log(err.response.data);
+            error(err.response.data)
         }
     };
       
@@ -47,12 +58,14 @@ function Login() {
     useEffect(() => {
 		async function login() {
 			try {
-				const response = await localStorageService.getLS();
+				let response = await localStorageService.getLS();
 				if (!response) {
                     console.log('Local storage vacío');
 				} else {
 					console.log('Usuario logueado: ', response.user);
 				}
+                response = await userService.getUsers();
+			    setUsers(response.data);
 			} catch (err) {
 				console.log('Error al intentar obtener el token de usuario. Error: ', err);
 			}
