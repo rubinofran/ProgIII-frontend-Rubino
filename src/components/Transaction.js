@@ -14,7 +14,7 @@ function Transaction({ data }) {
         }
     }
 
-    return <p>{createdAt}, <b>{translateAux()}</b> de <b>${amount}</b></p>
+    return <p className="adminMenuCssSizeP">{createdAt}, <b>{translateAux()}</b> de <b>${amount}</b></p>
 }
 
 /* const styles = {

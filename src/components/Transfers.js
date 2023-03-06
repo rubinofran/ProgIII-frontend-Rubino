@@ -48,7 +48,10 @@ function Transfers({ data, setUser, transactions, setTransactions, token }) {
             console.log('El usuario intenta buscar al destinatario de la transferencia con alias ', aliasSearched) 
             if(alias === aliasSearched) {
                 warning('El ALIAS ingresado es el suyo propio, intente con otro')
-            } else {
+            } else if(aliasSearched.trim() === '') {
+                error('El campo está vacío y no se puede buscar')
+                console.log('Error: El campo está vacío y no puede se buscar')
+             } else {
                 const response = await userService.getUserByAlias(aliasSearched, token);
                 setAddressee(response.data)
             }   
@@ -98,7 +101,8 @@ function Transfers({ data, setUser, transactions, setTransactions, token }) {
 
     return (
         <div>
-            <p><b>DESTINATARIO POR ALIAS:</b></p>
+            <p className="menuCssTransformP"><b>DINERO EN LA CUENTA:</b> ${moneyInAccount}</p>
+            <p style={styles.infoSep}><b>DESTINATARIO POR ALIAS:</b></p>
             {
                 addressee._id === ''
                     ?
@@ -136,8 +140,12 @@ const styles = {
     input: {
         marginRight: 10, 
         width: 300, 
-        textAlign: 'center' 
+        textAlign: 'center',
+        padding: '5px'  
     },
+    infoSep: {
+        padding: '5px'
+    }
 }
 
 export default Transfers;

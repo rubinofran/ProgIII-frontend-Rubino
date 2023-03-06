@@ -10,22 +10,18 @@ function AccountInformation({ data }) {
         <div>
             <Row>
                 <Col span={12}>
-                    <p><b>{clientType === 'Persona física' ? 'NOMBRE:' : 'RAZÓN SOCIAL:'}</b> {name}</p>
-                    <p><b>DIRECCIÓN:</b> {address}</p>
-                    <p><b>TIPO DE CLIENTE:</b> {clientType}</p>
+                    <p className="menuCssTransformP"><b>{clientType === 'Persona física' ? 'NOMBRE:' : 'RAZÓN SOCIAL:'}</b> {name}</p>
+                    <p className="menuCssTransformP"><b>DIRECCIÓN:</b> {address}</p>
+                    <p className="menuCssTransformP"><b>TIPO DE CLIENTE:</b> {clientType}</p>
                 </Col>
                 <Col span={12}>
-                    <p><b>ESTADO:</b> {isActive ? 'activo' : 'inactivo'}</p>
-                    <p><b>USUARIO:</b> {userName}</p>
-                    <p><b>TIPO DE CUENTA:</b> {accountType}</p>
+                    <p className="menuCssTransformP"><b>ESTADO:</b> {isActive ? 'activo' : 'inactivo'}</p>
+                    <p className="menuCssTransformP"><b>USUARIO:</b> {userName}</p>
+                    <p className="menuCssTransformP"><b>TIPO DE CUENTA:</b> {accountType}</p>
                 </Col>
             </Row>
         </div>
     )
 }
-
-/* const styles = {
-	
-} */
 
 export default AccountInformation;

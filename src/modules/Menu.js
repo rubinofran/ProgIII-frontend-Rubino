@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-/* import "../styles/Menu.css"; */
+import "../styles/Menu.css";
 import { useNavigate } from "react-router-dom";
 // Ant desing 
 import { Divider, Row, Col, Card, Button } from "antd";
@@ -40,7 +40,7 @@ function Menu() {
             console.log('El usuario intenta ver el resumen de la cuenta');
             if(!userLoggedState) {
                 console.log('Usuario dado de baja. No puede visualizar el resumen de cuenta')
-                return 'Usuario dado de baja. No puede visualizar el resumen de cuenta'
+                return <p className="menuCssTransformP">Usuario dado de baja. No puede visualizar el resumen de cuenta</p>
             }
             return <AccountSummary data={user} transactions={userTransactions}/>
         }
@@ -48,7 +48,7 @@ function Menu() {
             /* console.log('El usuario intenta realizar una extracción'); */
             if(!userLoggedState) {
                 console.log('Usuario dado de baja. No puede realizar extracciones')
-                return 'Usuario dado de baja. No puede realizar extracciones'
+                return <p className="menuCssTransformP">Usuario dado de baja. No puede realizar extracciones</p>
             }
             return <Operations data={user} isExtraction={true} setUser={setUser} transactions={userTransactions} setTransactions={setUserTransactions} token={token}/>
         }
@@ -56,7 +56,7 @@ function Menu() {
             /* console.log('El usuario intenta realizar un depósito'); */
             if(!userLoggedState) {
                 console.log('Usuario dado de baja. No puede realizar depósitos')
-                return 'Usuario dado de baja. No puede realizar depósitos'
+                return <p className="menuCssTransformP">Usuario dado de baja. No puede realizar depósitos</p>
             }
             return <Operations data={user} isExtraction={false} setUser={setUser} transactions={userTransactions} setTransactions={setUserTransactions} token={token}/>
         }
@@ -64,7 +64,7 @@ function Menu() {
             /* console.log('El usuario intenta realizar una transferencia'); */
             if(!userLoggedState) {
                 console.log('Usuario dado de baja. No puede realizar transferencias')
-                return 'Usuario dado de baja. No puede realizar transferencias'
+                return <p className="menuCssTransformP">Usuario dado de baja. No puede realizar transferencias</p>
             }
             return <Transfers data={user} setUser={setUser} transactions={userTransactions} setTransactions={setUserTransactions} token={token}/>
         }
@@ -111,11 +111,11 @@ function Menu() {
             <Row justify='space-around'>
                 <Col>
                     <Card title='OPERACIONES' style={styles.optCard}>
-                        <p><Button onClick={() => setOpt(0)}>INFORMACIÓN</Button></p>
-                        <p><Button onClick={() => setOpt(1)}>RESUMEN</Button></p>
-                        <p><Button onClick={() => setOpt(2)}>EXTRACCIÓN</Button></p>
-                        <p><Button onClick={() => setOpt(3)}>DEPÓSITO</Button></p>
-                        <p><Button onClick={() => setOpt(4)}>TRANSFERENCIA</Button></p>
+                        <p><Button onClick={() => setOpt(0)} style={styles.button}>INFORMACIÓN</Button></p>
+                        <p><Button onClick={() => setOpt(1)} style={styles.button}>RESUMEN</Button></p>
+                        <p><Button onClick={() => setOpt(2)} style={styles.button}>EXTRACCIÓN</Button></p>
+                        <p><Button onClick={() => setOpt(3)} style={styles.button}>DEPÓSITO</Button></p>
+                        <p><Button onClick={() => setOpt(4)} style={styles.button}>TRANSFERENCIA</Button></p>
                     </Card>
                 </Col>
                 <Col>
@@ -137,9 +137,12 @@ const styles = {
 		borderColor: 'aquamarine',
 	},
     optCard: { 
-        width: 300, 
+        width: 250, 
         backgroundColor: 'aquamarine' 
     },
+    button: {
+		width: 160
+	},
     infoCard: { 
         width: 900, 
         backgroundColor: 'aquamarine' 

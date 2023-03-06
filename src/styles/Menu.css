@@ -1,21 +1,9 @@
-/* .menuContainer {
-    background-color:darkcyan;
-    text-align: center;
+.menuCssTransformP {
+    padding: 5px;
+    transition: ease-in-out .2s;
 }
 
-.operaciones {
-    margin: 20px 500px;
-    background-color:yellow;
-    padding: 20px;
-    border-radius: 20px;
-} */
-
-
-.menuCssTransform {
-    transition: ease-in-out 0.3s;
-}
-
-.menuCssTransform:hover {
-    transform: translateX(-10px); /* scale(1.1); */
-    transition: .3s;
+.menuCssTransformP:hover {
+    transform: scale(1.5);
+    transition: .2s;
 }

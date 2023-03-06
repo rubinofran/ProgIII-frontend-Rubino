@@ -2,3 +2,7 @@
     height: 300px;
     overflow-y: scroll;
 }
+
+.adminMenuCssSizeP {
+    font-size: large;
+}

@@ -77,8 +77,8 @@ function Operations({ data, isExtraction, setUser, transactions, setTransactions
 
     return (
         <div>
-            <p><b>DINERO EN LA CUENTA:</b> ${moneyInAccount}</p>
-            <p><b>IMPORTE A {isExtraction ? 'RETIRAR' : 'DEPOSITAR'}:</b></p>
+            <p className="menuCssTransformP"><b>DINERO EN LA CUENTA:</b> ${moneyInAccount}</p>
+            <p style={styles.infoSep}><b>IMPORTE A {isExtraction ? 'RETIRAR' : 'DEPOSITAR'}:</b></p>
             <Input 
                 style={styles.input}
                 placeholder='Ingrese un importe'
@@ -96,8 +96,12 @@ const styles = {
     input: {
         marginRight: 10, 
         width: 300,
-        textAlign: 'center' 
+        textAlign: 'center',
+        padding: '5px' 
     },
+    infoSep: {
+        padding: '5px'
+    }
 }
 
 export default Operations;

@@ -9,13 +9,13 @@ const tokenKey = "__App__";
 const duration = 1000 * 60 * 60 * 24; // 24hs en milisegundos es 86400000
 const localStorageService = {};
 
-//
+// Configura el contenido del local storage
 localStorageService.setLS = user => lscache.set(tokenKey, user, duration);
 
-//
+// Obtiene el contenido del local storage
 localStorageService.getLS = () => lscache.get(tokenKey);
 
-//
+// Elimina el contenido del local storage
 localStorageService.deleteLS = () => {
 	api.defaults.headers.common['Authorization'] = "";
 	lscache.flush();
